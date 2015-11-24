@@ -51,6 +51,7 @@ public class EngineImpl implements Engine {
   @Override
   public int getScore(Player player) throws RemoteException {
     if (player.getType() == PlayerType.FLY) {
+      //TODO PROBABLY WRONG
       return (int) (player.getStartTime() / ConstantCache.TICK);
     }
     if (player.getType() == PlayerType.FROG) {
@@ -79,6 +80,11 @@ public class EngineImpl implements Engine {
   @Override
   public void setPlayer(Player player, int x, int y) {
     gameField[x][y] = player;
+  }
+
+  @Override
+  public Player makeMove(Player player, Move move) {
+    return MovementHandler.handleMove(move, player, gameField);
   }
 
 

@@ -1,6 +1,8 @@
 package engine;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.Player;
 import util.PlayerType;
 
@@ -8,6 +10,8 @@ import util.PlayerType;
  * Created by Hans on 23/11/2015.
  */
 public class EngineHandler {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(EngineHandler.class);
 
   public static int[][] maskBoard(Player[][] currentBoard, int x, int y, Player player) {
     int visibility;

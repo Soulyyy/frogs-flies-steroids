@@ -1,94 +1,100 @@
 package engine;
 
 
-import util.ConstantCache;
-import util.Player;
-import util.PlayerType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import util.*;
 
 /**
  * Created by Hans on 23/11/2015.
  */
 public class MovementHandler {
 
-  public static void handleMove(Move move, Player player) {
+  private static final Logger LOGGER = LoggerFactory.getLogger(MovementHandler.class);
+
+  public static Player handleMove(Move move, Player player, Player[][] gameField) {
+    LOGGER.info("Handling move {}", move);
     switch (move) {
       case DEAD:
-        return;
+        return null;
       case LEFT:
-        return;
+        return null;
       case RIGHT:
-        return;
+        return null;
       case UP:
-        handleUp(player, false);
-        return;
+        return handleUp(player, false, gameField);
       case DOWN:
-        return;
+        return null;
       case FROG:
-        return;
+        return null;
       case FLY:
-        return;
+        return null;
       case DOUBLELEFT:
-        return;
+        return null;
       case DOUBLERIGHT:
-        return;
+        return null;
       case DOUBLEUP:
-        return;
+        return null;
       case DOUBLEDOWN:
-        return;
+        return null;
       default:
         throw new IllegalArgumentException("No such move!");
     }
   }
 
-  private static void handleUp(Player player, boolean doubleMove) {
-    move(player, 0, doubleMove);
+  private static Player handleUp(Player player, boolean doubleMove, Player[][] gameField) {
+    LOGGER.info("Handling up event. Is double: {}", doubleMove);
+    return move(player, 0, doubleMove, gameField);
   }
 
-  private static void handleDown(Player player, boolean doubleMove) {
-    move(player, 1, doubleMove);
+  private static void handleDown(Player player, boolean doubleMove, Player[][] gameField) {
+    move(player, 1, doubleMove, gameField);
   }
 
-  private static void handleLeft(Player player, boolean doubleMove) {
-    move(player, 2, doubleMove);
+  private static void handleLeft(Player player, boolean doubleMove, Player[][] gameField) {
+    move(player, 2, doubleMove, gameField);
   }
 
-  private static void handleRight(Player player, boolean doubleMove) {
-    move(player, 3, doubleMove);
+  private static void handleRight(Player player, boolean doubleMove, Player[][] gameField) {
+    move(player, 3, doubleMove, gameField);
   }
 
-  public static boolean move(Player player, int direction, boolean doubleMove) {
+  public static Player move(Player player, int direction, boolean doubleMove, Player[][] gameField) {
     int moves = doubleMove ? 2 : 1;
     switch (direction) {
       case 0:
-        validateMakeMove(player, player.getY() - moves, player.getX());
-        break;
+        return makeMove(player, player.getX(), player.getY() - moves, gameField);
       case 1:
-        validateMakeMove(player, player.getY() + moves, player.getX());
-        break;
+        return makeMove(player, player.getX(), player.getY() + moves, gameField);
       case 2:
-        validateMakeMove(player, player.getY(), player.getX() + moves);
-        break;
+        return makeMove(player, player.getX() + moves, player.getY(), gameField);
       case 3:
-        validateMakeMove(player, player.getY(), player.getX() - moves);
-        break;
+        return makeMove(player, player.getX() - moves, player.getY(), gameField);
       default:
-        break;
+        throw new IllegalArgumentException("No ID for move to make: " + direction);
     }
-    return validateMakeMove(player, player.getY() - moves, player.getX());
-
   }
 
-  public static boolean validateMakeMove(Player player, int m, int n) {
-
-    return true;
+  public static Player makeMove(Player player, int m, int n, Player[][] gamefield) {
+    LOGGER.info("Moving from ({}, {}) -> ({}, {})", player.getX(), player.getY(), m, n);
+    if (validateMove(player, n, m)) {
+      LOGGER.info("Move passed validation");
+      if (gamefield[n][m].getType() == PlayerType.NULL) {
+        gamefield[n][m] = player;
+        gamefield[player.getX()][player.getY()] = new PlayerImpl();
+        player.setX(m);
+        player.setY(n);
+      }
+    }
+    return player;
   }
 
   public static boolean validateMove(Player player, int m, int n) {
-    if(m < 0 || n < 0 || m >= ConstantCache.HEIGHT || n >= ConstantCache.WIDTH) {
+    if (m < 0 || n < 0 || m >= ConstantCache.HEIGHT || n >= ConstantCache.WIDTH) {
       return false;
     }
     //TODO SEND DEATH HERE
-    if(player.getType() == PlayerType.FLY);
+    if (player.getType() == PlayerType.FLY) ;
     return true;
   }
 
@@ -96,10 +102,17 @@ public class MovementHandler {
 
   }
 
+  private void checkForFly(int m, int n) {
+
+  }
+
   public static void death(Player player) {
-    if(player.getType() == PlayerType.FLY);
-    if(player.getType() == PlayerType.FROG) {
-      if(player.getStartTime() / ConstantCache.TICK >= 1) {
+    if (player.getType() == PlayerType.FLY) ;
+    if (player.getType() == PlayerType.FROG) {
+      LOGGER.debug("Polled a frog with start time {}. Time elapsed: {}", player.getStartTime(), System.currentTimeMillis() - player.getStartTime());
+      if (System.currentTimeMillis() - player.getStartTime() >= ConstantCache.TICK) {
+        LOGGER.info("Killed {} on ({}, {})", player.getType(), player.getX(), player.getY());
+        LOGGER.info("Dead one had ID {}", player.getId());
         player.setType(PlayerType.NULL);
       }
     }

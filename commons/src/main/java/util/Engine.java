@@ -21,4 +21,6 @@ public interface Engine extends Remote {
 
   void setPlayer(Player player, int x, int y) throws RemoteException;
 
+  Player makeMove(Player player, Move move) throws RemoteException;
+
 }

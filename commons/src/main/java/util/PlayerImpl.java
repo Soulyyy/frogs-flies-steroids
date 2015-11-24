@@ -24,7 +24,7 @@ public class PlayerImpl implements Player {
     this.y = y;
     this.type = type;
     this.score = 0;
-    startTime = System.nanoTime();
+    startTime = System.currentTimeMillis();
   }
 
   public PlayerImpl() {
@@ -32,7 +32,14 @@ public class PlayerImpl implements Player {
     this.x = 0;
     this.y = 0;
     this.score = 0;
+    this.startTime = System.currentTimeMillis();
 
+  }
+
+  public PlayerImpl(PlayerType type) {
+    this.type = type;
+    this.score = 0;
+    this.startTime = System.currentTimeMillis();
   }
 
 
