@@ -1,0 +1,9 @@
+dependencies {
+    compile project(':commons')
+}
+
+fatJar.manifest {
+    attributes 'Main-Class': 'Main'
+}
+
+build.dependsOn(fatJar)

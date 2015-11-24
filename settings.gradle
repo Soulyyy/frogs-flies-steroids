@@ -1,2 +1,5 @@
-rootProject.name = 'praent'
+rootProject.name = 'frogs-files-steroids'
+include 'client'
+include 'server'
+include 'commons'
 

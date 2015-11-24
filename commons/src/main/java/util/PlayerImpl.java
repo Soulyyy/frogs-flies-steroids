@@ -1,0 +1,97 @@
+package util;
+
+/**
+ * Created by Hans on 23/11/2015.
+ */
+public class PlayerImpl implements Player {
+
+  private static final long serialVersionUID = 1L;
+
+  private PlayerType type;
+
+  private int x;
+
+  private int y;
+
+  private long startTime;
+
+  private int score;
+
+  public PlayerImpl(PlayerType type, int x, int y) {
+    this.x = x;
+    this.y = y;
+    this.type = type;
+    this.score = 0;
+    startTime = System.nanoTime();
+  }
+
+  public PlayerImpl() {
+    this.type = PlayerType.SPECTATOR;
+    this.x = 0;
+    this.y = 0;
+    this.score = 0;
+  }
+
+
+  @Override
+  public PlayerType getType() {
+    return type;
+  }
+
+  @Override
+  public void setType(PlayerType type) {
+    this.type = type;
+  }
+
+  public int intValue() {
+    switch (this.type) {
+      case NULL:
+        return 1;
+      case SPECTATOR:
+        return 2;
+      case FROG:
+        return 3;
+      case FLY:
+        return 4;
+      default:
+        throw new IllegalArgumentException("Not a valid player type!");
+    }
+  }
+
+  @Override
+  public int getX() {
+    return x;
+  }
+
+  @Override
+  public int getY() {
+    return y;
+  }
+
+  @Override
+  public long getStartTime() {
+    return startTime;
+  }
+
+  @Override
+  public int getScore() {
+    return score;
+  }
+
+  @Override
+  public void setScore(int score) {
+    this.score = score;
+  }
+
+  @Override
+  public void setX(int x) {
+    this.x = x;
+  }
+
+  @Override
+  public void setY(int y) {
+    this.y = y;
+  }
+
+
+}
