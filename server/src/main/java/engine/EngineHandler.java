@@ -2,6 +2,7 @@ package engine;
 
 
 import util.Player;
+import util.PlayerType;
 
 /**
  * Created by Hans on 23/11/2015.
@@ -27,12 +28,12 @@ public class EngineHandler {
     for (int i = 0; i < response.length; i++) {
       for (int j = 0; j < response[0].length; j++) {
         if (!(x + visibility >= j && x - visibility <= j && y + visibility >= i && y - visibility <= i)) {
-          response[i][j] = 0;
+          response[j][i] = 0;
         } else {
-          if(currentBoard[i][j].equals(player)) {
-            response[i][j] = 5;
+          if(currentBoard[j][i].equals(player)) {
+            response[j][i] = 5;
           } else {
-            response[i][j] = currentBoard[i][j].intValue();
+            response[j][i] = currentBoard[j][i].intValue();
           }
         }
       }

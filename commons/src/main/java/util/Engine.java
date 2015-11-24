@@ -17,5 +17,8 @@ public interface Engine extends Remote {
 
   int getScore(Player player) throws RemoteException;
 
-  void registerPlayer(Player player) throws RemoteException;
+  Player registerPlayer(Player player) throws RemoteException;
+
+  void setPlayer(Player player, int x, int y) throws RemoteException;
+
 }

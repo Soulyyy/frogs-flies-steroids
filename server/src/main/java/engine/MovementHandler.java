@@ -1,6 +1,7 @@
 package engine;
 
 
+import util.ConstantCache;
 import util.Player;
 import util.PlayerType;
 
@@ -9,7 +10,7 @@ import util.PlayerType;
  */
 public class MovementHandler {
 
-  public void handleMove(Move move, Player player) {
+  public static void handleMove(Move move, Player player) {
     switch (move) {
       case DEAD:
         return;
@@ -39,23 +40,23 @@ public class MovementHandler {
     }
   }
 
-  public void handleUp(Player player, boolean doubleMove) {
+  private static void handleUp(Player player, boolean doubleMove) {
     move(player, 0, doubleMove);
   }
 
-  public void handleDown(Player player, boolean doubleMove) {
+  private static void handleDown(Player player, boolean doubleMove) {
     move(player, 1, doubleMove);
   }
 
-  public void handleLeft(Player player, boolean doubleMove) {
+  private static void handleLeft(Player player, boolean doubleMove) {
     move(player, 2, doubleMove);
   }
 
-  public void handleRight(Player player, boolean doubleMove) {
+  private static void handleRight(Player player, boolean doubleMove) {
     move(player, 3, doubleMove);
   }
 
-  public boolean move(Player player, int direction, boolean doubleMove) {
+  public static boolean move(Player player, int direction, boolean doubleMove) {
     int moves = doubleMove ? 2 : 1;
     switch (direction) {
       case 0:
@@ -77,12 +78,12 @@ public class MovementHandler {
 
   }
 
-  public boolean validateMakeMove(Player player, int m, int n) {
+  public static boolean validateMakeMove(Player player, int m, int n) {
 
     return true;
   }
 
-  public boolean validateMove(Player player, int m, int n) {
+  public static boolean validateMove(Player player, int m, int n) {
     if(m < 0 || n < 0 || m >= ConstantCache.HEIGHT || n >= ConstantCache.WIDTH) {
       return false;
     }
@@ -91,11 +92,16 @@ public class MovementHandler {
     return true;
   }
 
-  public void register(int type) {
+  public static void register(int type) {
 
   }
 
-  public void death(Player player) {
+  public static void death(Player player) {
     if(player.getType() == PlayerType.FLY);
+    if(player.getType() == PlayerType.FROG) {
+      if(player.getStartTime() / ConstantCache.TICK >= 1) {
+        player.setType(PlayerType.NULL);
+      }
+    }
   }
 }

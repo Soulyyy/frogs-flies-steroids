@@ -17,6 +17,8 @@ public class PlayerImpl implements Player {
 
   private int score;
 
+  private int id;
+
   public PlayerImpl(PlayerType type, int x, int y) {
     this.x = x;
     this.y = y;
@@ -30,6 +32,7 @@ public class PlayerImpl implements Player {
     this.x = 0;
     this.y = 0;
     this.score = 0;
+
   }
 
 
@@ -93,5 +96,29 @@ public class PlayerImpl implements Player {
     this.y = y;
   }
 
+  @Override
+  public int getId() {
+    return this.id;
+  }
 
+  @Override
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    PlayerImpl player = (PlayerImpl) o;
+
+    return id == player.id;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return id;
+  }
 }

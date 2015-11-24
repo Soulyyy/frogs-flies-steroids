@@ -26,4 +26,8 @@ public interface Player extends Serializable {
   void setX(int x);
 
   void setY(int y);
+
+  int getId();
+
+  void setId(int id);
 }

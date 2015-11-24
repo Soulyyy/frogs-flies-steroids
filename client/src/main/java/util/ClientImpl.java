@@ -1,5 +1,8 @@
 package util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Arrays;
@@ -9,13 +12,18 @@ import java.util.Arrays;
  */
 public class ClientImpl {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(ClientImpl.class);
+
   public static void main(String[] args) throws Exception {
     Registry registry = LocateRegistry.getRegistry("localhost");
     Engine rmiServer = (Engine) registry.lookup("EngineImpl");
-    Player player = new PlayerImpl();
-    player.setType(PlayerType.FROG);
     Arrays.stream(rmiServer.getBoard()).flatMapToInt(Arrays::stream).forEach(System.out::println);
-    rmiServer.registerPlayer(player);
+    Player player = new PlayerImpl();
+    player.setType(PlayerType.FLY);
+    player = rmiServer.registerPlayer(player);
+    LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
+    LOGGER.info("Current player has ID {}", player.getId());
+
     int[][] visibleBoard = rmiServer.getMaskedBoard(player);
     for (int[] ints : visibleBoard) {
       for (int i : ints) {
@@ -23,5 +31,14 @@ public class ClientImpl {
       }
       System.out.println();
     }
+    if(player.getType() == PlayerType.NULL) {
+      //You are dead
+      System.out.println("Holy crap, you died :(");
+      System.exit(0);
+    }
+
+    player.setType(PlayerType.NULL);
+    rmiServer.setPlayer(player, player.getX(), player.getY());
   }
+
 }
