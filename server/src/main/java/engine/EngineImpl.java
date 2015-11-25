@@ -105,10 +105,11 @@ public class EngineImpl implements Engine {
     Registry registry = LocateRegistry.createRegistry(1099);
     registry.bind("EngineImpl", stub);
 
-    //Main loop of the game
+    //Ok, actually, this loop does not matter, this is for clearing dead frogs
+    //Flies don't get old, because of spec and radiation
     while (true) {
-      //Ghetto clocking, don't want to burn CPU while testing
-      Thread.sleep(100);
+      //Ghetto clocking, don't want to burn CPU
+      Thread.sleep(1000);
       //Poll the dead, kill them
       Arrays.stream(gameField).flatMap(Arrays::stream).forEach(MovementHandler::death);
 

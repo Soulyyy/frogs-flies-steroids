@@ -123,10 +123,6 @@ public class MovementHandler {
     }
   }
 
-  private void checkForFly(int m, int n) {
-
-  }
-
   public static void death(Player player) {
     if (player.getType() == PlayerType.FLY) ;
     if (player.getType() == PlayerType.FROG) {

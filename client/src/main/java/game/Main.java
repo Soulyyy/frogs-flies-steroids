@@ -67,7 +67,7 @@ public class Main extends Application {
       Main.launch(args);
     }).start();
 
-    Registry registry = LocateRegistry.getRegistry("localhost");
+    Registry registry = LocateRegistry.getRegistry(ip);
     rmiServer = (Engine) registry.lookup("EngineImpl");
     //Arrays.stream(rmiServer.getBoard()).flatMapToInt(Arrays::stream).forEach(System.out::println);
     player = new PlayerImpl(PlayerType.SPECTATOR);

@@ -50,6 +50,8 @@ public class PlayerImpl implements Player {
 
   @Override
   public void setType(PlayerType type) {
+    //We create object before registering as a fly or frog
+    this.startTime = System.currentTimeMillis();
     this.type = type;
   }
 
@@ -85,6 +87,9 @@ public class PlayerImpl implements Player {
 
   @Override
   public int getScore() {
+    if (this.type == PlayerType.FLY) {
+      return (int) ((System.currentTimeMillis() - this.startTime) / ConstantCache.TICK);
+    }
     return score;
   }
 
