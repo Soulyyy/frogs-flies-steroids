@@ -47,6 +47,8 @@ public class GameFieldElements {
         return Color.GREEN;
       case 4:
         return Color.BLUE;
+      case 2:
+        return Color.PINK;
       default:
         throw new IllegalArgumentException("Mapping a non-color code to color: " + i);
     }

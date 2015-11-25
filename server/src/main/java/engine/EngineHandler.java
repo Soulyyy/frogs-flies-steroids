@@ -26,6 +26,9 @@ public class EngineHandler {
       case FLY:
         visibility = 2;
         break;
+      case NULL:
+        LOGGER.info("Player died: ", player);
+        return null;
       default:
         throw new IllegalArgumentException("Did not find matching type!");
     }
@@ -35,7 +38,7 @@ public class EngineHandler {
         if (!(x + visibility >= j && x - visibility <= j && y + visibility >= i && y - visibility <= i)) {
           response[j][i] = 0;
         } else {
-          if(currentBoard[j][i].equals(player)) {
+          if (currentBoard[j][i].equals(player)) {
             response[j][i] = 5;
           } else {
             response[j][i] = currentBoard[j][i].intValue();

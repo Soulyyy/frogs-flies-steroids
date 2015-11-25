@@ -69,7 +69,7 @@ public class Main extends Application {
 
     Registry registry = LocateRegistry.getRegistry("localhost");
     rmiServer = (Engine) registry.lookup("EngineImpl");
-    Arrays.stream(rmiServer.getBoard()).flatMapToInt(Arrays::stream).forEach(System.out::println);
+    //Arrays.stream(rmiServer.getBoard()).flatMapToInt(Arrays::stream).forEach(System.out::println);
     player = new PlayerImpl(PlayerType.SPECTATOR);
     player = rmiServer.registerPlayer(player);
     /*LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
@@ -105,6 +105,11 @@ public class Main extends Application {
         System.out.println("Holy crap, you died :(");
         System.exit(0);
       }
+      if (player.getType() == PlayerType.SPECTATOR) {
+        visibleBoard = rmiServer.getMaskedBoard(player);
+        GameFieldElements.updateGameField(visibleBoard, EventCache.rects);
+        continue;
+      }
       LOGGER.info("Making move: {}", EventCache.previousEvent);
       player = rmiServer.makeMove(player, EventCache.previousEvent);
       EventCache.previousEvent = Move.NULL;
@@ -113,6 +118,7 @@ public class Main extends Application {
       LOGGER.info("Current player has ID {}", player.getId());
       try {
         GameFieldElements.updateGameField(visibleBoard, EventCache.rects);
+        changeScore(player.getScore() + "");
       } catch (NullPointerException e) {
         LOGGER.warn("Game not initialized");
       }
@@ -154,10 +160,12 @@ public class Main extends Application {
     fly.setOnAction(event -> {
           root.getChildren().removeAll(fly, frog);
           root.getChildren().addAll(scoreLabel, nameLabel);
-          EventCache.previousEvent = Move.FLY;
+          //EventCache.previousEvent = Move.FLY;
           try {
             LOGGER.info("Registering Fly, {}", player);
-            rmiServer.registerPlayer(player);
+            player.setType(PlayerType.FLY);
+            // player = rmiServer.registerPlayer(player);
+            player = rmiServer.putPlayerOnBoard(player);
             visibleBoard = rmiServer.getMaskedBoard(player);
             GameFieldElements.updateGameField(visibleBoard, EventCache.rects);
           } catch (RemoteException e) {
@@ -172,10 +180,12 @@ public class Main extends Application {
     frog.setOnAction(event -> {
           root.getChildren().removeAll(fly, frog);
           root.getChildren().addAll(scoreLabel, nameLabel);
-          EventCache.previousEvent = Move.FROG;
+          //EventCache.previousEvent = Move.FROG;
           try {
+            player.setType(PlayerType.FROG);
             LOGGER.info("Registering Frog, {}", player);
-            rmiServer.registerPlayer(player);
+            //player = rmiServer.registerPlayer(player);
+            player = rmiServer.putPlayerOnBoard(player);
             visibleBoard = rmiServer.getMaskedBoard(player);
             GameFieldElements.updateGameField(visibleBoard, EventCache.rects);
 

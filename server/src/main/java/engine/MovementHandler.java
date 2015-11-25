@@ -13,7 +13,7 @@ public class MovementHandler {
   private static final Logger LOGGER = LoggerFactory.getLogger(MovementHandler.class);
 
   public static Player handleMove(Move move, Player player, Player[][] gameField) {
-    LOGGER.info("Handling move {}", move);
+    LOGGER.debug("Handling move {}", move);
     switch (move) {
       case DEAD:
         return null;
@@ -25,10 +25,6 @@ public class MovementHandler {
         return handleUp(player, false, gameField);
       case DOWN:
         return handleDown(player, false, gameField);
-      case FROG:
-        return register(player, 1);
-      case FLY:
-        return register(player, 0);
       case DOUBLELEFT:
         return handleLeft(player, true, gameField);
       case DOUBLERIGHT:
@@ -41,7 +37,7 @@ public class MovementHandler {
         //Don't do anything
         return player;
       default:
-        throw new IllegalArgumentException("No such move!");
+        throw new IllegalArgumentException("No such move, " + move);
     }
   }
 
@@ -90,6 +86,16 @@ public class MovementHandler {
         gamefield[player.getX()][player.getY()] = new PlayerImpl(PlayerType.NULL);
         player.setX(m);
         player.setY(n);
+      } else if (gamefield[m][n].getType() == PlayerType.FLY && player.getType() == PlayerType.FROG) {
+        player.setScore(player.getScore() + 1);
+        gamefield[m][n] = player;
+        gamefield[player.getX()][player.getY()] = new PlayerImpl(PlayerType.NULL);
+        player.setX(m);
+        player.setY(n);
+      } else if (gamefield[m][n].getType() == PlayerType.FROG && player.getType() == PlayerType.FLY) {
+        gamefield[m][n].setScore(gamefield[m][n].getScore());
+        gamefield[player.getX()][player.getY()] = new PlayerImpl(PlayerType.NULL);
+        player = new PlayerImpl(PlayerType.NULL);
       }
     }
     return player;

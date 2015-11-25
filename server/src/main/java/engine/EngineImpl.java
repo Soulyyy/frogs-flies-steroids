@@ -61,6 +61,7 @@ public class EngineImpl implements Engine {
 
   @Override
   public Player registerPlayer(Player player) {
+    LOGGER.info("Registerd player: {}", player);
     player.setId(ID.incrementAndGet());
     return player;
   }
@@ -76,6 +77,7 @@ public class EngineImpl implements Engine {
         gameField[x][y] = player;
         player.setX(x);
         player.setY(y);
+        LOGGER.info("Player with coordinates ({}, {})", player.getX(), player.getY());
         return player;
       }
     }
