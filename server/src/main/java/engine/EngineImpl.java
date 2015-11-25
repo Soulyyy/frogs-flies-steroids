@@ -90,6 +90,7 @@ public class EngineImpl implements Engine {
 
   @Override
   public Player makeMove(Player player, Move move) {
+    player.setScore(gameField[player.getX()][player.getY()].getScore());
     return MovementHandler.handleMove(move, player, gameField);
   }
 

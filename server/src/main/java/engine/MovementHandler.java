@@ -93,7 +93,7 @@ public class MovementHandler {
         player.setX(m);
         player.setY(n);
       } else if (gamefield[m][n].getType() == PlayerType.FROG && player.getType() == PlayerType.FLY) {
-        gamefield[m][n].setScore(gamefield[m][n].getScore());
+        gamefield[m][n].setScore(gamefield[m][n].getScore() + 1);
         gamefield[player.getX()][player.getY()] = new PlayerImpl(PlayerType.NULL);
         player = new PlayerImpl(PlayerType.NULL);
       }
