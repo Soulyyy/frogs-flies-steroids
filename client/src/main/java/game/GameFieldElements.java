@@ -30,7 +30,7 @@ public class GameFieldElements {
   public static void updateGameField(int[][] ints, Rectangle[][] rects) {
     for (int i = 0; i < rects.length; i++) {
       for (int j = 0; j < rects[0].length; j++) {
-        rects[i][j].setFill(mapIntToColor(ints[i][j]));
+        rects[j][i].setFill(mapIntToColor(ints[i][j]));
       }
     }
   }
@@ -41,14 +41,14 @@ public class GameFieldElements {
         return Color.BLACK;
       case 1:
         return Color.YELLOW;
-      case 2:
+      case 5:
         return Color.RED;
-      case 3:
+      case 2:
         return Color.GREEN;
-      case 4:
+      case 3:
         return Color.BLUE;
       default:
-        return null;
+        throw new IllegalArgumentException("Mapping a non-color code to color!");
     }
   }
 

@@ -11,8 +11,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.Move;
+import util.*;
 
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +42,11 @@ public class Main extends Application {
     Platform.runLater(() -> scoreLabel.setText(score));
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
+    String ip;
+
+    String name;
+
     if (args.length == 1) {
       ip = args[0];
       name = "default";
@@ -50,7 +57,60 @@ public class Main extends Application {
       ip = "localhost";
       name = "default";
     }
-    launch(args);
+    new Thread(() -> {
+      Main.launch(args);
+    }).start();
+
+    Registry registry = LocateRegistry.getRegistry("localhost");
+    Engine rmiServer = (Engine) registry.lookup("EngineImpl");
+    Arrays.stream(rmiServer.getBoard()).flatMapToInt(Arrays::stream).forEach(System.out::println);
+    Player player = new PlayerImpl(PlayerType.FROG);
+    player = rmiServer.registerPlayer(player);
+    LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
+    LOGGER.info("Current player has ID {}", player.getId());
+
+    int[][] visibleBoard = rmiServer.getMaskedBoard(player);
+    for (int[] ints : visibleBoard) {
+      for (int i : ints) {
+        System.out.print(i);
+      }
+      System.out.println();
+    }
+    player = rmiServer.makeMove(player, Move.DOUBLEDOWN);
+    LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
+    LOGGER.info("Current player has ID {}", player.getId());
+
+    System.out.println("-------------------");
+    visibleBoard = rmiServer.getMaskedBoard(player);
+    for (int[] ints : visibleBoard) {
+      for (int i : ints) {
+        System.out.print(i);
+      }
+      System.out.println();
+    }
+    //This time active game loop is here
+    while (true) {
+      //We fps block in frontend, because we are a modern game and build on game tick
+      //Read this as a rant
+      Thread.sleep(500);
+      if (player.getType() == PlayerType.NULL) {
+        //You are dead
+        System.out.println("Holy crap, you died :(");
+        System.exit(0);
+      }
+      LOGGER.info("Making move: {}", EventCache.previousEvent);
+      player = rmiServer.makeMove(player, EventCache.previousEvent);
+      EventCache.previousEvent = Move.NULL;
+      visibleBoard = rmiServer.getMaskedBoard(player);
+      LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
+      LOGGER.info("Current player has ID {}", player.getId());
+      try {
+        GameFieldElements.updateGameField(visibleBoard, EventCache.rects);
+      } catch (NullPointerException e) {
+        LOGGER.warn("Game not initialized");
+      }
+
+    }
   }
 
   @Override

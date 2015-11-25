@@ -99,8 +99,8 @@ public class EngineImpl implements Engine {
 
     //Main loop of the game
     while (true) {
-      //Ghetto clocking on 2 FPS
-      Thread.sleep(500);
+      //Ghetto clocking, don't want to burn CPU while testing
+      Thread.sleep(100);
       //Poll the dead, kill them
       Arrays.stream(gameField).flatMap(Arrays::stream).forEach(MovementHandler::death);
 

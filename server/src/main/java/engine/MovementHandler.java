@@ -37,6 +37,9 @@ public class MovementHandler {
         return handleUp(player, true, gameField);
       case DOUBLEDOWN:
         return handleDown(player, true, gameField);
+      case NULL:
+        //Don't do anything
+        return player;
       default:
         throw new IllegalArgumentException("No such move!");
     }

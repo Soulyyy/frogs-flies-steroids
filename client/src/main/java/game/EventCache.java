@@ -10,5 +10,5 @@ public class EventCache {
 
   public static Rectangle[][] rects;
 
-  public static Move previousEvent;
+  public static Move previousEvent = Move.NULL;
 }
