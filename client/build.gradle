@@ -1,3 +1,9 @@
 dependencies {
     compile project(':commons')
 }
+
+fatJar.manifest {
+    attributes 'Main-Class': 'game.Main'
+}
+
+build.dependsOn(fatJar)

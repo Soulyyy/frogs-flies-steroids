@@ -3,7 +3,7 @@ dependencies {
 }
 
 fatJar.manifest {
-    attributes 'Main-Class': 'Main'
+    attributes 'Main-Class': 'engine.EngineImpl'
 }
 
 build.dependsOn(fatJar)
