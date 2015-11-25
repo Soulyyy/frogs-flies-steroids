@@ -17,7 +17,8 @@ public class EngineHandler {
     int visibility;
     switch (player.getType()) {
       case SPECTATOR:
-        visibility = Integer.MAX_VALUE;
+        //Creates an overflow if not reduced
+        visibility = Integer.MAX_VALUE - 1_000_000;
         break;
       case FROG:
         visibility = 1;

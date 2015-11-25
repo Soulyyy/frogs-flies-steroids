@@ -28,6 +28,12 @@ import java.util.stream.Collectors;
 //            (Only CSS)
 public class Main extends Application {
 
+  static Player player;
+
+  static Engine rmiServer;
+
+  static int[][] visibleBoard;
+
   static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
   static String ip;
@@ -62,21 +68,22 @@ public class Main extends Application {
     }).start();
 
     Registry registry = LocateRegistry.getRegistry("localhost");
-    Engine rmiServer = (Engine) registry.lookup("EngineImpl");
+    rmiServer = (Engine) registry.lookup("EngineImpl");
     Arrays.stream(rmiServer.getBoard()).flatMapToInt(Arrays::stream).forEach(System.out::println);
-    Player player = new PlayerImpl(PlayerType.FROG);
+    player = new PlayerImpl(PlayerType.SPECTATOR);
     player = rmiServer.registerPlayer(player);
-    LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
-    LOGGER.info("Current player has ID {}", player.getId());
+    /*LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
+    LOGGER.info("Current player has ID {}", player.getId());*/
+    visibleBoard = rmiServer.getMaskedBoard(player);
 
-    int[][] visibleBoard = rmiServer.getMaskedBoard(player);
+   /* int[][] visibleBoard = rmiServer.getMaskedBoard(player);
     for (int[] ints : visibleBoard) {
       for (int i : ints) {
         System.out.print(i);
       }
       System.out.println();
     }
-    player = rmiServer.makeMove(player, Move.DOUBLEDOWN);
+    //player = rmiServer.makeMove(player, Move.DOUBLEDOWN);
     LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
     LOGGER.info("Current player has ID {}", player.getId());
 
@@ -87,7 +94,7 @@ public class Main extends Application {
         System.out.print(i);
       }
       System.out.println();
-    }
+    }*/
     //This time active game loop is here
     while (true) {
       //We fps block in frontend, because we are a modern game and build on game tick
@@ -148,6 +155,15 @@ public class Main extends Application {
           root.getChildren().removeAll(fly, frog);
           root.getChildren().addAll(scoreLabel, nameLabel);
           EventCache.previousEvent = Move.FLY;
+          try {
+            LOGGER.info("Registering Fly, {}", player);
+            rmiServer.registerPlayer(player);
+            visibleBoard = rmiServer.getMaskedBoard(player);
+            GameFieldElements.updateGameField(visibleBoard, EventCache.rects);
+          } catch (RemoteException e) {
+            LOGGER.error("Failed to register fly position!", e);
+            System.exit(1);
+          }
           primaryStage.setScene(scene);
           primaryStage.show();
         }
@@ -157,6 +173,16 @@ public class Main extends Application {
           root.getChildren().removeAll(fly, frog);
           root.getChildren().addAll(scoreLabel, nameLabel);
           EventCache.previousEvent = Move.FROG;
+          try {
+            LOGGER.info("Registering Frog, {}", player);
+            rmiServer.registerPlayer(player);
+            visibleBoard = rmiServer.getMaskedBoard(player);
+            GameFieldElements.updateGameField(visibleBoard, EventCache.rects);
+
+          } catch (RemoteException e) {
+            LOGGER.error("Failed to register Frog!", e);
+            System.exit(1);
+          }
           primaryStage.setScene(scene);
           primaryStage.show();
         }
@@ -164,7 +190,8 @@ public class Main extends Application {
 
     scene.setOnKeyPressed(event -> {
       Move tmp = Move.NULL;
-      if (EventCache.previousEvent != Move.NULL) {
+      if (EventCache.previousEvent != Move.NULL && player.getType() == PlayerType.FROG) {
+        LOGGER.info("Temporary event is: {}", EventCache.previousEvent);
         tmp = EventCache.previousEvent;
       }
       if (event.getCode() == KeyCode.UP) {
@@ -174,19 +201,19 @@ public class Main extends Application {
           EventCache.previousEvent = Move.UP;
         }
       } else if (event.getCode() == KeyCode.DOWN) {
-        if (tmp == Move.UP) {
+        if (tmp == Move.DOWN) {
           EventCache.previousEvent = Move.DOUBLEDOWN;
         } else {
           EventCache.previousEvent = Move.DOWN;
         }
       } else if (event.getCode() == KeyCode.LEFT) {
-        if (tmp == Move.UP) {
+        if (tmp == Move.LEFT) {
           EventCache.previousEvent = Move.DOUBLELEFT;
         } else {
           EventCache.previousEvent = Move.LEFT;
         }
       } else if (event.getCode() == KeyCode.RIGHT) {
-        if (tmp == Move.UP) {
+        if (tmp == Move.RIGHT) {
           EventCache.previousEvent = Move.DOUBLERIGHT;
         } else {
           EventCache.previousEvent = Move.RIGHT;

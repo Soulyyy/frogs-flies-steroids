@@ -23,4 +23,6 @@ public interface Engine extends Remote {
 
   Player makeMove(Player player, Move move) throws RemoteException;
 
+  Player putPlayerOnBoard(Player player) throws RemoteException;
+
 }

@@ -62,6 +62,11 @@ public class EngineImpl implements Engine {
   @Override
   public Player registerPlayer(Player player) {
     player.setId(ID.incrementAndGet());
+    return player;
+  }
+
+  @Override
+  public Player putPlayerOnBoard(Player player) {
     while (true) {
       int x = (int) (Math.random() * 8);
       int y = (int) (Math.random() * 8);

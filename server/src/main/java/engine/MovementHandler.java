@@ -26,9 +26,9 @@ public class MovementHandler {
       case DOWN:
         return handleDown(player, false, gameField);
       case FROG:
-        return null;
+        return register(player, 1);
       case FLY:
-        return null;
+        return register(player, 0);
       case DOUBLELEFT:
         return handleLeft(player, true, gameField);
       case DOUBLERIGHT:
@@ -105,8 +105,16 @@ public class MovementHandler {
     return true;
   }
 
-  public static void register(int type) {
-
+  public static Player register(Player player, int type) {
+    if (type == 0) {
+      player.setType(PlayerType.FLY);
+      return player;
+    } else if (type == 1) {
+      player.setType(PlayerType.FROG);
+      return player;
+    } else {
+      throw new NullPointerException("Not a valid player type!");
+    }
   }
 
   private void checkForFly(int m, int n) {
