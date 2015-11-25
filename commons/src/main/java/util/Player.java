@@ -30,4 +30,6 @@ public interface Player extends Serializable {
   int getId();
 
   void setId(int id);
+
+  void setStartTime(long startTime);
 }

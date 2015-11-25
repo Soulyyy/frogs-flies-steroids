@@ -88,12 +88,16 @@ public class MovementHandler {
         player.setY(n);
       } else if (gamefield[m][n].getType() == PlayerType.FLY && player.getType() == PlayerType.FROG) {
         player.setScore(player.getScore() + 1);
+        //Frog gets extra time
+        player.setStartTime(System.currentTimeMillis());
         gamefield[m][n] = player;
         gamefield[player.getX()][player.getY()] = new PlayerImpl(PlayerType.NULL);
         player.setX(m);
         player.setY(n);
       } else if (gamefield[m][n].getType() == PlayerType.FROG && player.getType() == PlayerType.FLY) {
         gamefield[m][n].setScore(gamefield[m][n].getScore() + 1);
+        //Frog gets extra time
+        gamefield[m][n].setStartTime(System.currentTimeMillis());
         gamefield[player.getX()][player.getY()] = new PlayerImpl(PlayerType.NULL);
         player = new PlayerImpl(PlayerType.NULL);
       }
@@ -106,25 +110,10 @@ public class MovementHandler {
       LOGGER.info("Invalid move from player type {}", player.getType());
       return false;
     }
-    //TODO SEND DEATH HERE
-    if (player.getType() == PlayerType.FLY) ;
     return true;
   }
 
-  public static Player register(Player player, int type) {
-    if (type == 0) {
-      player.setType(PlayerType.FLY);
-      return player;
-    } else if (type == 1) {
-      player.setType(PlayerType.FROG);
-      return player;
-    } else {
-      throw new NullPointerException("Not a valid player type!");
-    }
-  }
-
   public static void death(Player player) {
-    if (player.getType() == PlayerType.FLY) ;
     if (player.getType() == PlayerType.FROG) {
       LOGGER.debug("Polled a frog with start time {}. Time elapsed: {}", player.getStartTime(), System.currentTimeMillis() - player.getStartTime());
       if (System.currentTimeMillis() - player.getStartTime() >= ConstantCache.TICK) {

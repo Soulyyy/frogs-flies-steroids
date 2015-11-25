@@ -36,8 +36,6 @@ public class Main extends Application {
 
   static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-  static String ip;
-
   static String name = "";
 
   public static String score = "0";
@@ -50,8 +48,6 @@ public class Main extends Application {
 
   public static void main(String[] args) throws Exception {
     String ip;
-
-    String name;
 
     if (args.length == 1) {
       ip = args[0];
@@ -69,32 +65,10 @@ public class Main extends Application {
 
     Registry registry = LocateRegistry.getRegistry(ip);
     rmiServer = (Engine) registry.lookup("EngineImpl");
-    //Arrays.stream(rmiServer.getBoard()).flatMapToInt(Arrays::stream).forEach(System.out::println);
     player = new PlayerImpl(PlayerType.SPECTATOR);
     player = rmiServer.registerPlayer(player);
-    /*LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
-    LOGGER.info("Current player has ID {}", player.getId());*/
     visibleBoard = rmiServer.getMaskedBoard(player);
 
-   /* int[][] visibleBoard = rmiServer.getMaskedBoard(player);
-    for (int[] ints : visibleBoard) {
-      for (int i : ints) {
-        System.out.print(i);
-      }
-      System.out.println();
-    }
-    //player = rmiServer.makeMove(player, Move.DOUBLEDOWN);
-    LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
-    LOGGER.info("Current player has ID {}", player.getId());
-
-    System.out.println("-------------------");
-    visibleBoard = rmiServer.getMaskedBoard(player);
-    for (int[] ints : visibleBoard) {
-      for (int i : ints) {
-        System.out.print(i);
-      }
-      System.out.println();
-    }*/
     //This time active game loop is here
     while (true) {
       //We fps block in frontend, because we are a modern game and build on game tick
