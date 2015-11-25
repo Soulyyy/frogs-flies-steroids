@@ -30,7 +30,7 @@ public class ClientImpl {
       }
       System.out.println();
     }
-    player = rmiServer.makeMove(player, Move.UP);
+    player = rmiServer.makeMove(player, Move.DOUBLEDOWN);
     LOGGER.info("Current player has coordinates ({}, {})", player.getX(), player.getY());
     LOGGER.info("Current player has ID {}", player.getId());
 

@@ -45,14 +45,13 @@ public class EngineImpl implements Engine {
 
   @Override
   public int[][] getMaskedBoard(Player player) {
-    return EngineHandler.maskBoard(gameField,player.getX(),player.getY(), player);
+    return EngineHandler.maskBoard(gameField, player.getX(), player.getY(), player);
   }
 
   @Override
   public int getScore(Player player) throws RemoteException {
     if (player.getType() == PlayerType.FLY) {
-      //TODO PROBABLY WRONG
-      return (int) (player.getStartTime() / ConstantCache.TICK);
+      return (int) ((System.currentTimeMillis() - player.getStartTime()) / ConstantCache.TICK);
     }
     if (player.getType() == PlayerType.FROG) {
       return player.getScore();
@@ -67,7 +66,7 @@ public class EngineImpl implements Engine {
       int x = (int) (Math.random() * 8);
       int y = (int) (Math.random() * 8);
       if (gameField[x][y].getType() == PlayerType.NULL) {
-        LOGGER.info("Added player {} at ({}, {})", player.getType(), x , y);
+        LOGGER.info("Added player {} at ({}, {})", player.getType(), x, y);
         LOGGER.info("Player ID set as {}", player.getId());
         gameField[x][y] = player;
         player.setX(x);

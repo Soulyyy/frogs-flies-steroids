@@ -18,25 +18,25 @@ public class MovementHandler {
       case DEAD:
         return null;
       case LEFT:
-        return null;
+        return handleLeft(player, false, gameField);
       case RIGHT:
-        return null;
+        return handleRight(player, false, gameField);
       case UP:
         return handleUp(player, false, gameField);
       case DOWN:
-        return null;
+        return handleDown(player, false, gameField);
       case FROG:
         return null;
       case FLY:
         return null;
       case DOUBLELEFT:
-        return null;
+        return handleLeft(player, true, gameField);
       case DOUBLERIGHT:
-        return null;
+        return handleRight(player, true, gameField);
       case DOUBLEUP:
-        return null;
+        return handleUp(player, true, gameField);
       case DOUBLEDOWN:
-        return null;
+        return handleDown(player, true, gameField);
       default:
         throw new IllegalArgumentException("No such move!");
     }
@@ -47,29 +47,32 @@ public class MovementHandler {
     return move(player, 0, doubleMove, gameField);
   }
 
-  private static void handleDown(Player player, boolean doubleMove, Player[][] gameField) {
-    move(player, 1, doubleMove, gameField);
+  private static Player handleDown(Player player, boolean doubleMove, Player[][] gameField) {
+    LOGGER.info("Handling down event. Is double {}", doubleMove);
+    return move(player, 1, doubleMove, gameField);
   }
 
-  private static void handleLeft(Player player, boolean doubleMove, Player[][] gameField) {
-    move(player, 2, doubleMove, gameField);
+  private static Player handleLeft(Player player, boolean doubleMove, Player[][] gameField) {
+    LOGGER.info("Handling left event. Is double: {}", doubleMove);
+    return move(player, 2, doubleMove, gameField);
   }
 
-  private static void handleRight(Player player, boolean doubleMove, Player[][] gameField) {
-    move(player, 3, doubleMove, gameField);
+  private static Player handleRight(Player player, boolean doubleMove, Player[][] gameField) {
+    LOGGER.info("Handling right event. Is double: {}", doubleMove);
+    return move(player, 3, doubleMove, gameField);
   }
 
   public static Player move(Player player, int direction, boolean doubleMove, Player[][] gameField) {
     int moves = doubleMove ? 2 : 1;
     switch (direction) {
       case 0:
-        return makeMove(player, player.getX(), player.getY() - moves, gameField);
-      case 1:
-        return makeMove(player, player.getX(), player.getY() + moves, gameField);
-      case 2:
-        return makeMove(player, player.getX() + moves, player.getY(), gameField);
-      case 3:
         return makeMove(player, player.getX() - moves, player.getY(), gameField);
+      case 1:
+        return makeMove(player, player.getX() + moves, player.getY(), gameField);
+      case 2:
+        return makeMove(player, player.getX(), player.getY() - moves, gameField);
+      case 3:
+        return makeMove(player, player.getX(), player.getY() + moves, gameField);
       default:
         throw new IllegalArgumentException("No ID for move to make: " + direction);
     }
@@ -79,9 +82,9 @@ public class MovementHandler {
     LOGGER.info("Moving from ({}, {}) -> ({}, {})", player.getX(), player.getY(), m, n);
     if (validateMove(player, n, m)) {
       LOGGER.info("Move passed validation");
-      if (gamefield[n][m].getType() == PlayerType.NULL) {
-        gamefield[n][m] = player;
-        gamefield[player.getX()][player.getY()] = new PlayerImpl();
+      if (gamefield[m][n].getType() == PlayerType.NULL) {
+        gamefield[m][n] = player;
+        gamefield[player.getX()][player.getY()] = new PlayerImpl(PlayerType.NULL);
         player.setX(m);
         player.setY(n);
       }
@@ -91,6 +94,7 @@ public class MovementHandler {
 
   public static boolean validateMove(Player player, int m, int n) {
     if (m < 0 || n < 0 || m >= ConstantCache.HEIGHT || n >= ConstantCache.WIDTH) {
+      LOGGER.info("Invalid move from player type {}", player.getType());
       return false;
     }
     //TODO SEND DEATH HERE

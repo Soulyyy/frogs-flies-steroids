@@ -14,5 +14,6 @@ public enum Move {
   DOUBLELEFT,
   DOUBLERIGHT,
   DOUBLEUP,
-  DOUBLEDOWN
+  DOUBLEDOWN,
+  NULL
 }
