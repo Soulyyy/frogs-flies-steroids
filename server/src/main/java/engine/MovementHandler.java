@@ -90,6 +90,7 @@ public class MovementHandler {
         player.setScore(player.getScore() + 1);
         //Frog gets extra time
         player.setStartTime(System.currentTimeMillis());
+        LOGGER.info("Frog got extra time, he now has", player.getStartTime());
         gamefield[m][n] = player;
         gamefield[player.getX()][player.getY()] = new PlayerImpl(PlayerType.NULL);
         player.setX(m);
@@ -98,6 +99,7 @@ public class MovementHandler {
         gamefield[m][n].setScore(gamefield[m][n].getScore() + 1);
         //Frog gets extra time
         gamefield[m][n].setStartTime(System.currentTimeMillis());
+        LOGGER.info("Frog got extra time, he now has", player.getStartTime());
         gamefield[player.getX()][player.getY()] = new PlayerImpl(PlayerType.NULL);
         player = new PlayerImpl(PlayerType.NULL);
       }
@@ -115,7 +117,7 @@ public class MovementHandler {
 
   public static void death(Player player) {
     if (player.getType() == PlayerType.FROG) {
-      LOGGER.debug("Polled a frog with start time {}. Time elapsed: {}", player.getStartTime(), System.currentTimeMillis() - player.getStartTime());
+      LOGGER.info("Polled a frog with start time {}. Time elapsed: {}", player.getStartTime(), System.currentTimeMillis() - player.getStartTime());
       if (System.currentTimeMillis() - player.getStartTime() >= ConstantCache.TICK) {
         LOGGER.info("Killed {} on ({}, {})", player.getType(), player.getX(), player.getY());
         LOGGER.info("Dead one had ID {}", player.getId());

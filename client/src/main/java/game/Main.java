@@ -74,6 +74,11 @@ public class Main extends Application {
       //We fps block in frontend, because we are a modern game and build on game tick
       //Read this as a rant
       Thread.sleep(500);
+      //Poll if player died
+      LOGGER.info("Player type is {}", player.getType());
+      if (player.getType() != PlayerType.NULL && player.getType() != PlayerType.SPECTATOR) {
+        player = rmiServer.getPlayer(player.getX(), player.getY());
+      }
       if (player.getType() == PlayerType.NULL) {
         //You are dead
         System.out.println("Holy crap, you died :(");

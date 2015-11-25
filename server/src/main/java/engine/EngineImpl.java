@@ -84,6 +84,11 @@ public class EngineImpl implements Engine {
   }
 
   @Override
+  public Player getPlayer(int x, int y) throws RemoteException {
+    return gameField[x][y];
+  }
+
+  @Override
   public void setPlayer(Player player, int x, int y) {
     gameField[x][y] = player;
   }
