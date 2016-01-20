@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':client')
+    compile project(':server')
+    compile project(':commons')
+}
+
+fatJar.manifest {
+    attributes 'ApplicationMain-Class': 'ApplicationMain'
+}
+
+build.dependsOn(fatJar)

@@ -3,7 +3,7 @@ dependencies {
 }
 
 fatJar.manifest {
-    attributes 'Main-Class': 'game.Main'
+    attributes 'ClientMain-Class': 'game.ClientMain'
 }
 
 build.dependsOn(fatJar)

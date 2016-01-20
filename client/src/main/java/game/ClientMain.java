@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 //FRONT END DEVELOPMENT REQUIRES NO CODE QUALITY
 //            (Only CSS)
-public class Main extends Application {
+public class ClientMain {
 
   static Player player;
 
@@ -34,7 +34,7 @@ public class Main extends Application {
 
   static int[][] visibleBoard;
 
-  static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+  static final Logger LOGGER = LoggerFactory.getLogger(ClientMain.class);
 
   static String name = "";
 
@@ -42,8 +42,25 @@ public class Main extends Application {
 
   public static Label scoreLabel;
 
+  public static Stage stage;
+
   public static void changeScore(String score) {
     Platform.runLater(() -> scoreLabel.setText(score));
+  }
+
+  public static void setup(String[] args) throws Exception {
+    String ip;
+
+    if (args.length == 1) {
+      ip = args[0];
+      name = "default";
+    } else if (args.length > 1) {
+      ip = args[0];
+      name = args[1];
+    } else {
+      ip = "localhost";
+      name = "default";
+    }
   }
 
   public static void main(String[] args) throws Exception {
@@ -59,9 +76,13 @@ public class Main extends Application {
       ip = "localhost";
       name = "default";
     }
+    Stage stage = new Stage();
+    start(stage);
+/*
     new Thread(() -> {
-      Main.launch(args);
+      ClientMain.launch(args);
     }).start();
+*/
 
     Registry registry = LocateRegistry.getRegistry(ip);
     rmiServer = (Engine) registry.lookup("EngineImpl");
@@ -105,8 +126,7 @@ public class Main extends Application {
     }
   }
 
-  @Override
-  public void start(Stage primaryStage) throws Exception {
+  public static void start(Stage primaryStage) throws Exception {
     LOGGER.info("Client working!");
     Label nameLabel = new Label(name);
 
