@@ -5,7 +5,7 @@ dependencies {
 }
 
 fatJar.manifest {
-    attributes 'ApplicationMain-Class': 'ApplicationMain'
+    attributes 'Main-Class': 'game.ApplicationMain'
 }
 
 build.dependsOn(fatJar)

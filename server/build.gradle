@@ -1,9 +1,3 @@
 dependencies {
     compile project(':commons')
 }
-
-fatJar.manifest {
-    attributes 'Main-Class': 'engine.EngineImpl'
-}
-
-build.dependsOn(fatJar)

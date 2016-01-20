@@ -1,9 +1,3 @@
 dependencies {
     compile project(':commons')
 }
-
-fatJar.manifest {
-    attributes 'ClientMain-Class': 'game.ClientMain'
-}
-
-build.dependsOn(fatJar)
