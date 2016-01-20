@@ -48,8 +48,9 @@ public class ClientMain {
     Platform.runLater(() -> scoreLabel.setText(score));
   }
 
+  private static String ip;
+
   public static void setup(String[] args) throws Exception {
-    String ip;
 
     if (args.length == 1) {
       ip = args[0];
@@ -61,35 +62,24 @@ public class ClientMain {
       ip = "localhost";
       name = "default";
     }
+/*    new Thread(() -> {
+      try {
+        mainLoop();
+      } catch (Exception e) {
+        //TODO Here be moving back to servers
+        e.printStackTrace();
+      }
+    }).start();
+    start(stage);*/
+    mainLoop();
   }
 
-  public static void main(String[] args) throws Exception {
-    String ip;
-
-    if (args.length == 1) {
-      ip = args[0];
-      name = "default";
-    } else if (args.length > 1) {
-      ip = args[0];
-      name = args[1];
-    } else {
-      ip = "localhost";
-      name = "default";
-    }
-    Stage stage = new Stage();
-    start(stage);
-/*
-    new Thread(() -> {
-      ClientMain.launch(args);
-    }).start();
-*/
-
+  private static void mainLoop() throws Exception {
     Registry registry = LocateRegistry.getRegistry(ip);
     rmiServer = (Engine) registry.lookup("EngineImpl");
     player = new PlayerImpl(PlayerType.SPECTATOR);
     player = rmiServer.registerPlayer(player);
     visibleBoard = rmiServer.getMaskedBoard(player);
-
     //This time active game loop is here
     while (true) {
       //We fps block in frontend, because we are a modern game and build on game tick
@@ -124,6 +114,7 @@ public class ClientMain {
       }
 
     }
+
   }
 
   public static void start(Stage primaryStage) throws Exception {

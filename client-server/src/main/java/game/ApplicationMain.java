@@ -2,12 +2,15 @@ package game;
 
 import engine.EngineImpl;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
+import javax.swing.*;
 
 /**
  * Created by Hans on 10/01/2016.
@@ -44,14 +47,19 @@ public class ApplicationMain extends Application {
         }).start();
       }
       if (chooseClient.isSelected()) {
+        try {
+          ClientMain.start(primaryStage);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
         new Thread(() -> {
           try {
             ClientMain.setup(strings);
-            ClientMain.start(primaryStage);
+            //ClientMain.start(primaryStage);
           } catch (Exception ignore) {
             ignore.printStackTrace();
           }
-        }).run();
+        }).start();
       }
     });
 
