@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.*;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -100,6 +102,31 @@ public class EngineImpl implements Engine {
     return MovementHandler.handleMove(move, player, gameField);
   }
 
+  // Source: https://gist.github.com/vorburger/3429822
+  private static int findFreePort() {
+    ServerSocket socket = null;
+    try {
+      socket = new ServerSocket(0);
+      socket.setReuseAddress(true);
+      int port = socket.getLocalPort();
+      try {
+        socket.close();
+      } catch (IOException e) {
+        // Ignore IOException on close()
+      }
+      return port;
+    } catch (IOException e) {
+    } finally {
+      if (socket != null) {
+        try {
+          socket.close();
+        } catch (IOException e) {
+        }
+      }
+    }
+    throw new IllegalStateException("Could not find a free TCP/IP port");
+  }
+
 
   public static void main(String[] args) throws Exception {
 
@@ -108,7 +135,8 @@ public class EngineImpl implements Engine {
     EngineImpl engine = new EngineImpl();
 
     Engine stub = (Engine) UnicastRemoteObject.exportObject(engine, 0);
-    Registry registry = LocateRegistry.createRegistry(1099);
+
+    Registry registry = LocateRegistry.createRegistry(findFreePort());
     registry.bind("EngineImpl", stub);
 
     String ip = args.length >= 1 ? args[0] : "localhost";
