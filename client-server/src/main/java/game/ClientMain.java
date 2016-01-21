@@ -50,7 +50,7 @@ public class ClientMain {
 
   private static String ip;
 
-  public static void setup(String[] args) throws Exception {
+  public static void setup(String[] args, Stage primaryStage) throws Exception {
 
     if (args.length == 1) {
       ip = args[0];
@@ -71,7 +71,26 @@ public class ClientMain {
       }
     }).start();
     start(stage);*/
-    mainLoop();
+    new Thread(() -> {
+      try {
+        mainLoop();
+      } catch (Exception ignore) {
+        Platform.runLater(() -> {
+          try {
+            ServerSelect.start(primaryStage);
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        });
+      }
+    }).start();
+    Platform.runLater(() -> {
+      try {
+        ClientMain.start(primaryStage);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    });
   }
 
   private static void mainLoop() throws Exception {
@@ -93,7 +112,8 @@ public class ClientMain {
       if (player.getType() == PlayerType.NULL) {
         //You are dead
         System.out.println("Holy crap, you died :(");
-        System.exit(0);
+        throw new IllegalStateException("Player is dead");
+        //System.exit(0);
       }
       if (player.getType() == PlayerType.SPECTATOR) {
         visibleBoard = rmiServer.getMaskedBoard(player);
@@ -140,6 +160,10 @@ public class ClientMain {
     Button frog = GameFieldElements.chooseFrog(scene, primaryStage);
     frog.setLayoutX(700);
     frog.setLayoutY(200);
+
+
+    //Hack, don't remove. This triggers an instant nullpointer when there is no server
+    //player.getId();
 
     root.getChildren().add(frog);
     root.getChildren().addAll(rectangles);

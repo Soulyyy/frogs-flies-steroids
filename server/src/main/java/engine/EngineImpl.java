@@ -10,6 +10,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -110,6 +111,9 @@ public class EngineImpl implements Engine {
     Registry registry = LocateRegistry.createRegistry(1099);
     registry.bind("EngineImpl", stub);
 
+    String ip = args.length >= 1 ? args[0] : "localhost";
+    int port = args.length >= 2 && new Scanner(args[1]).hasNextInt() ? new Integer(args[1]) : 8080;
+    new Thread(new Announcer(ip, port)).start();
     //Ok, actually, this loop does not matter, this is for clearing dead frogs
     //Flies don't get old, because of spec and radiation
     while (true) {

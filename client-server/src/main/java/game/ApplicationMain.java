@@ -10,8 +10,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import javax.swing.*;
-
 /**
  * Created by Hans on 10/01/2016.
  */
@@ -48,17 +46,20 @@ public class ApplicationMain extends Application {
       }
       if (chooseClient.isSelected()) {
         try {
-          ClientMain.start(primaryStage);
+          ServerSelect.start(primaryStage);
         } catch (Exception e) {
           e.printStackTrace();
         }
         new Thread(() -> {
-          try {
-            ClientMain.setup(strings);
-            //ClientMain.start(primaryStage);
-          } catch (Exception ignore) {
-            ignore.printStackTrace();
-          }
+          Platform.runLater(() -> {
+            try {
+              ServerSelect.start(primaryStage);
+            } catch (Exception e) {
+              e.printStackTrace();
+              System.exit(1);
+            }
+          });
+
         }).start();
       }
     });
@@ -68,11 +69,13 @@ public class ApplicationMain extends Application {
     Scene scene = new Scene(root, 800, 600);
 
     primaryStage.setScene(scene);
+    primaryStage.setOnCloseRequest(event -> System.exit(0));
     primaryStage.show();
 
   }
 
   public static void main(String[] args) {
+
     strings = args;
     new Thread(() -> ApplicationMain.launch(args)).start();
   }
