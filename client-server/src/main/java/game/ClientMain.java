@@ -59,9 +59,12 @@ public class ClientMain {
     if (args.length == 1) {
       LOGGER.info("First argument is: {}", args[0]);
       ip = args[0];
+    } else {
+      ip="0.0.0.0";
+    }
       port = 1099;
       name = "default";
-    } else if (args.length == 2) {
+   /* } else if (args.length == 2) {
       LOGGER.info("First argument is: {}, second argument is: {}", args[0], args[1]);
       ip = args[0];
       port = new Scanner(args[1]).hasNextInt() ? new Integer(args[1]) : 8080;
@@ -73,16 +76,7 @@ public class ClientMain {
     } else {
       ip = "localhost";
       name = "default";
-    }
-/*    new Thread(() -> {
-      try {
-        mainLoop();
-      } catch (Exception e) {
-        //TODO Here be moving back to servers
-        e.printStackTrace();
-      }
-    }).start();
-    start(stage);*/
+    }*/
     new Thread(() -> {
       try {
         mainLoop();

@@ -10,7 +10,7 @@ public class ConstantCache implements Remote {
   public static final int HEIGHT = 8;
   public static final int WIDTH = 8;
 
-  public static final long TICK = 1200000L;
+  public static final long TICK = 120000L;
 
   public static final int MULTICAST_PORT = 12345;
 
