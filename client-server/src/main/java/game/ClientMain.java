@@ -96,9 +96,6 @@ public class ClientMain {
   }
 
   private static void mainLoop() throws Exception {
-    if("0.0.0.0".equals(ip) || "localhost".equals(ip)) {
-      ip = "127.0.0.1";
-    }
     Registry registry = LocateRegistry.getRegistry(ip, port);
     rmiServer = (Engine) registry.lookup("EngineImpl");
     player = new PlayerImpl(PlayerType.SPECTATOR);
