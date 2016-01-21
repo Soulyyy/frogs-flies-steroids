@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.*;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -30,6 +32,15 @@ public class EngineImpl implements Engine {
       for (int j = 0; j < gameField[0].length; j++) {
         gameField[i][j] = new PlayerImpl(PlayerType.NULL, i, j);
       }
+    }
+  }
+
+  private static int findPort() {
+    try (ServerSocket socket = new ServerSocket(0)) {
+      socket.setReuseAddress(true);
+      return socket.getLocalPort();
+    } catch (IOException e) {
+      throw new IllegalStateException("Free TCP/IP port not found!");
     }
   }
 
@@ -108,11 +119,19 @@ public class EngineImpl implements Engine {
     EngineImpl engine = new EngineImpl();
 
     Engine stub = (Engine) UnicastRemoteObject.exportObject(engine, 0);
-    Registry registry = LocateRegistry.createRegistry(1099);
-    registry.bind("EngineImpl", stub);
+    int port = findPort();
+    LOGGER.info("Found port: {}", port);
+    Registry registry;
 
     String ip = args.length >= 1 ? args[0] : "localhost";
-    int port = args.length >= 2 && new Scanner(args[1]).hasNextInt() ? new Integer(args[1]) : 8080;
+    //int port = args.length >= 2 && new Scanner(args[1]).hasNextInt() ? new Integer(args[1]) : 8080;
+    try {
+    registry = LocateRegistry.createRegistry(port);
+
+    } catch (RemoteException e) {
+      registry = LocateRegistry.getRegistry(ip, port);
+    }
+    registry.bind("EngineImpl", stub);
     new Thread(new Announcer(ip, port)).start();
     //Ok, actually, this loop does not matter, this is for clearing dead frogs
     //Flies don't get old, because of spec and radiation

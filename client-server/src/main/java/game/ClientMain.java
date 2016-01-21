@@ -1,6 +1,6 @@
 package game;
 
-import javafx.application.Application;
+
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,6 +18,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +45,8 @@ public class ClientMain {
 
   public static Stage stage;
 
+  public static int port;
+
   public static void changeScore(String score) {
     Platform.runLater(() -> scoreLabel.setText(score));
   }
@@ -51,13 +54,22 @@ public class ClientMain {
   private static String ip;
 
   public static void setup(String[] args, Stage primaryStage) throws Exception {
+    LOGGER.info("args length is: {}", args.length);
 
     if (args.length == 1) {
+      LOGGER.info("First argument is: {}", args[0]);
       ip = args[0];
+      port = 1099;
       name = "default";
-    } else if (args.length > 1) {
+    } else if (args.length == 2) {
+      LOGGER.info("First argument is: {}, second argument is: {}", args[0], args[1]);
       ip = args[0];
-      name = args[1];
+      port = new Scanner(args[1]).hasNextInt() ? new Integer(args[1]) : 8080;
+      name = "default";
+    } else if(args.length > 2) {
+      ip = args[0];
+      port = Integer.parseInt(args[1]);
+      name = args[2];
     } else {
       ip = "localhost";
       name = "default";
@@ -75,6 +87,7 @@ public class ClientMain {
       try {
         mainLoop();
       } catch (Exception ignore) {
+        LOGGER.info("Ignoring exception" , ignore);
         Platform.runLater(() -> {
           try {
             ServerSelect.start(primaryStage);
@@ -94,7 +107,7 @@ public class ClientMain {
   }
 
   private static void mainLoop() throws Exception {
-    Registry registry = LocateRegistry.getRegistry(ip);
+    Registry registry = LocateRegistry.getRegistry(ip, port);
     rmiServer = (Engine) registry.lookup("EngineImpl");
     player = new PlayerImpl(PlayerType.SPECTATOR);
     player = rmiServer.registerPlayer(player);

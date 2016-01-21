@@ -45,11 +45,11 @@ public class ApplicationMain extends Application {
         }).start();
       }
       if (chooseClient.isSelected()) {
-        try {
+        /*try {
           ServerSelect.start(primaryStage);
         } catch (Exception e) {
           e.printStackTrace();
-        }
+        }*/
         new Thread(() -> {
           Platform.runLater(() -> {
             try {

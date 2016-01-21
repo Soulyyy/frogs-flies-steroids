@@ -1,6 +1,5 @@
 package game;
 
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +8,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.ServerObject;
 
 /**
@@ -17,10 +18,14 @@ import util.ServerObject;
  */
 public class ServerSelect {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(ServerSelect.class);
+
   private static ListView<ServerObject> listView;
   private static Pane pane;
+  public static int port;
 
   public static void serverSelect(Stage primaryStage) {
+    LOGGER.info("Opening Server Select pane");
     pane = new Pane();
     Scene scene = new Scene(pane, 800, 600);
     primaryStage.setScene(scene);
@@ -34,8 +39,10 @@ public class ServerSelect {
     start.setLayoutY(400);
     start.setOnAction(event -> {
       try {
-        //ClientMain.setup(new String[]{listView.getSelectionModel().getSelectedItem().ip, listView.getSelectionModel().getSelectedItem().port + ""}, primaryStage);
-        ClientMain.setup(new String[]{}, primaryStage);
+
+        ClientMain.setup(new String[]{listView.getSelectionModel().getSelectedItem().ip, listView.getSelectionModel().getSelectedItem().port + ""}, primaryStage);
+        //ClientMain.setup(new String[]{}, primaryStage);
+
       } catch (Exception ignore) {
         ignore.printStackTrace();
       }
@@ -43,7 +50,7 @@ public class ServerSelect {
 
     new Thread(() -> {
       while (true) {
-        System.out.println("cleanup");
+        LOGGER.info("Cleaning up outdated servers");
         ServerLister.updateServers(null);
         ServerSelect.updateListView();
         try {
@@ -56,6 +63,7 @@ public class ServerSelect {
 
     pane.getChildren().addAll(listView, start);
     primaryStage.setOnCloseRequest(event -> System.exit(0));
+
     primaryStage.show();
   }
 
@@ -66,7 +74,7 @@ public class ServerSelect {
   }
 
   public static void updateListView() {
-    System.out.println("updating list view");
+    LOGGER.info("updating list view");
     Platform.runLater(() -> {
           pane.getChildren().remove(listView);
           ObservableList<ServerObject> items = FXCollections.observableArrayList(
